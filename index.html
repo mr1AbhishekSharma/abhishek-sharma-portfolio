@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abhishek Sharma — Python & Django Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        dm: ['DM Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #ffffff; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+
+        .glow-blob {
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -200px; left: 50%;
+            transform: translateX(-50%);
+            filter: blur(60px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(to bottom, #34d399 0%, #047857 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-hover {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .card-hover:hover {
+            border-color: rgba(16,185,129,0.3);
+            box-shadow: 0 0 30px -5px rgba(16,185,129,0.1);
+            transform: translateY(-4px);
+        }
+
+        .btn-primary {
+            transition: transform 150ms ease, box-shadow 150ms ease;
+        }
+        .btn-primary:hover { transform: scale(1.05); }
+        .btn-primary:active { transform: scale(0.95); }
+
+        .btn-secondary {
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+        .btn-secondary:hover {
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
+        }
+
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fade-up 0.6s ease-out forwards; }
+        .delay-100 { animation-delay: 0.1s; opacity: 0; }
+        .delay-200 { animation-delay: 0.2s; opacity: 0; }
+        .delay-300 { animation-delay: 0.3s; opacity: 0; }
+        .delay-400 { animation-delay: 0.4s; opacity: 0; }
+        .delay-500 { animation-delay: 0.5s; opacity: 0; }
+        .delay-600 { animation-delay: 0.6s; opacity: 0; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-scroll { animation: scroll 30s linear infinite; }
+
+        .skill-bar {
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 19px;
+            top: 40px;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(16,185,129,0.5), transparent);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: #171717;
+            border: 1px solid rgba(16,185,129,0.3);
+            color: #fff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 380px;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.15s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #10b981;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .project-image {
+            transition: transform 0.5s ease;
+        }
+        .project-card:hover .project-image {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            background: linear-gradient(to bottom, #34d399 0%, #047857 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .project-card {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .field-error {
+            border-color: rgba(239, 68, 68, 0.5) !important;
+        }
+        .error-text {
+            color: #ef4444;
+            font-size: 11px;
+            margin-top: 4px;
+            display: none;
+        }
+        .error-text.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-[#0a0a0a] antialiased">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span class="iconify text-emerald-400" data-icon="lucide:check-circle" data-width="18"></span>
+        <span id="toast-message">Message sent successfully!</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 h-16 bg-neutral-950/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                    <span class="iconify text-emerald-400" data-icon="lucide:code-2" data-width="16"></span>
+                </div>
+                <span class="font-dm text-lg font-medium tracking-tighter">Abhishek<span class="text-emerald-400">.</span></span>
+            </a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#about" class="nav-link text-sm text-neutral-400 hover:text-white">About</a>
+                <a href="#skills" class="nav-link text-sm text-neutral-400 hover:text-white">Skills</a>
+                <a href="#projects" class="nav-link text-sm text-neutral-400 hover:text-white">Projects</a>
+                <a href="#experience" class="nav-link text-sm text-neutral-400 hover:text-white">Experience</a>
+                <a href="#contact" class="nav-link text-sm text-neutral-400 hover:text-white">Contact</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="#contact" class="hidden sm:inline-flex btn-primary bg-white text-black text-sm font-medium px-4 py-1.5 rounded-full">
+                    Hire Me
+                </a>
+                <button id="mobile-toggle" class="md:hidden text-neutral-400 hover:text-white transition-colors">
+                    <span class="iconify" data-icon="lucide:menu" data-width="22"></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-neutral-950/95 backdrop-blur-xl hidden flex-col items-center justify-center gap-8">
+        <a href="#about" class="text-2xl text-neutral-300 hover:text-white transition-colors mobile-link">About</a>
+        <a href="#skills" class="text-2xl text-neutral-300 hover:text-white transition-colors mobile-link">Skills</a>
+        <a href="#projects" class="text-2xl text-neutral-300 hover:text-white transition-colors mobile-link">Projects</a>
+        <a href="#experience" class="text-2xl text-neutral-300 hover:text-white transition-colors mobile-link">Experience</a>
+        <a href="#contact" class="text-2xl text-neutral-300 hover:text-white transition-colors mobile-link">Contact</a>
+        <button id="mobile-close" class="absolute top-5 right-6 text-neutral-400 hover:text-white">
+            <span class="iconify" data-icon="lucide:x" data-width="24"></span>
+        </button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-16 overflow-hidden">
+        <div class="bg-grid absolute inset-0 z-0"></div>
+        <div class="glow-blob"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 text-center">
+            <div class="animate-fade-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 mb-8">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-xs font-medium text-neutral-400">Open to opportunities</span>
+            </div>
+
+            <h1 class="animate-fade-up delay-100 font-dm font-light tracking-tighter text-5xl md:text-7xl lg:text-8xl leading-none mb-6">
+                Abhishek<br>
+                <span class="hero-gradient">Sharma</span>
+            </h1>
+
+            <p class="animate-fade-up delay-200 text-lg font-light text-neutral-400 max-w-2xl mx-auto mb-4 leading-relaxed">
+                Backend Developer specializing in Python and Django — building scalable REST APIs,
+                secure authentication systems, and production-ready web applications.
+            </p>
+            <p class="animate-fade-up delay-200 text-sm font-light text-neutral-500 max-w-lg mx-auto mb-10">
+                B.E. Computer Engineering @ Government Engineering College, Rajkot (GTU) · 8.49 CGPA
+            </p>
+
+            <div class="animate-fade-up delay-300 max-w-lg mx-auto mb-10">
+                <div class="bg-neutral-900/80 border border-white/10 rounded-2xl p-5 text-left font-mono text-sm">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-3 h-3 rounded-full bg-neutral-700"></div>
+                        <div class="w-3 h-3 rounded-full bg-neutral-700"></div>
+                        <div class="w-3 h-3 rounded-full bg-neutral-700"></div>
+                        <span class="text-xs text-neutral-600 ml-2">developer.py</span>
+                    </div>
+                    <div class="text-neutral-500">
+                        <span class="text-emerald-400">class</span> <span class="text-white">Developer</span>:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-emerald-400">def</span> <span class="text-white">__init__</span>(<span class="text-neutral-400">self</span>):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-neutral-400">self</span>.name = <span class="text-amber-400">"Abhishek Sharma"</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-neutral-400">self</span>.role = <span class="text-amber-400">"Backend Developer"</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-neutral-400">self</span>.stack = [<span class="text-amber-400">"Python"</span>, <span class="text-amber-400">"Django"</span>, <span class="text-amber-400">"DRF"</span>]<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-neutral-400">self</span>.passion = <span class="text-amber-400">"Building scalable APIs"</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="animate-fade-up delay-400 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#projects" class="btn-primary bg-white text-black text-sm font-medium px-8 py-3 rounded-full flex items-center gap-2">
+                    View Projects
+                    <span class="iconify" data-icon="lucide:arrow-down" data-width="16"></span>
+                </a>
+                <a href="#contact" class="btn-secondary border border-white/10 bg-white/5 text-white text-sm font-medium px-8 py-3 rounded-full flex items-center gap-2">
+                    <span class="iconify text-emerald-400" data-icon="lucide:mail" data-width="16"></span>
+                    Get in Touch
+                </a>
+            </div>
+
+            <div class="animate-fade-up delay-500 grid grid-cols-3 gap-8 max-w-md mx-auto mt-16">
+                <div class="text-center">
+                    <div class="stat-number font-dm text-3xl font-light" data-target="3">0</div>
+                    <div class="text-xs text-neutral-500 mt-1">Projects</div>
+                </div>
+                <div class="text-center">
+                    <div class="stat-number font-dm text-3xl font-light" data-target="2">0</div>
+                    <div class="text-xs text-neutral-500 mt-1">Internships</div>
+                </div>
+                <div class="text-center">
+                    <div class="stat-number font-dm text-3xl font-light" data-target="5">0</div>
+                    <div class="text-xs text-neutral-500 mt-1">Certifications</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Scroll -->
+    <section class="py-12 border-y border-white/5 overflow-hidden">
+        <div class="animate-scroll flex items-center gap-12 whitespace-nowrap">
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:python" data-width="28"></span>
+                <span class="text-sm">Python</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:django-icon" data-width="28"></span>
+                <span class="text-sm">Django</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:postgresql" data-width="28"></span>
+                <span class="text-sm">PostgreSQL</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:react" data-width="28"></span>
+                <span class="text-sm">React</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:javascript" data-width="28"></span>
+                <span class="text-sm">JavaScript</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:git-icon" data-width="28"></span>
+                <span class="text-sm">Git</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:tailwindcss-icon" data-width="28"></span>
+                <span class="text-sm">Tailwind CSS</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:bootstrap" data-width="28"></span>
+                <span class="text-sm">Bootstrap</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:jwt-icon" data-width="28"></span>
+                <span class="text-sm">JWT Auth</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:postman-icon" data-width="28"></span>
+                <span class="text-sm">Postman</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:python" data-width="28"></span>
+                <span class="text-sm">Python</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:django-icon" data-width="28"></span>
+                <span class="text-sm">Django</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:postgresql" data-width="28"></span>
+                <span class="text-sm">PostgreSQL</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:react" data-width="28"></span>
+                <span class="text-sm">React</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:javascript" data-width="28"></span>
+                <span class="text-sm">JavaScript</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:git-icon" data-width="28"></span>
+                <span class="text-sm">Git</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:tailwindcss-icon" data-width="28"></span>
+                <span class="text-sm">Tailwind CSS</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:bootstrap" data-width="28"></span>
+                <span class="text-sm">Bootstrap</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:jwt-icon" data-width="28"></span>
+                <span class="text-sm">JWT Auth</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-600">
+                <span class="iconify" data-icon="logos:postman-icon" data-width="28"></span>
+                <span class="text-sm">Postman</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="relative">
+                    <div class="relative rounded-3xl overflow-hidden border border-white/10">
+                        <img src="/WhatsApp Image 2026-04-12 at 1.50.24 AM.jpeg" alt="Abhishek Sharma" class="w-full h-[500px] object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-neutral-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-5 animate-float">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                                <span class="iconify text-emerald-400" data-icon="lucide:graduation-cap" data-width="20"></span>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium">8.49 CGPA</div>
+                                <div class="text-xs text-neutral-500">B.E. Computer Engg.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
+                        <span class="text-xs font-medium text-emerald-400">About Me</span>
+                    </div>
+                    <h2 class="font-dm font-light tracking-tight text-3xl md:text-5xl mb-6">
+                        Crafting digital solutions<br>
+                        <span class="text-neutral-500">with Python & Django</span>
+                    </h2>
+                    <p class="text-neutral-400 font-light leading-relaxed mb-6">
+                        I'm a Backend Developer specializing in Python and Django, with hands-on experience
+                        building scalable REST APIs, secure authentication systems, and production-ready
+                        web applications using Django REST Framework, Celery, and Redis.
+                    </p>
+                    <p class="text-neutral-400 font-light leading-relaxed mb-8">
+                        Currently pursuing my B.E. in Computer Engineering at Government Engineering College,
+                        Rajkot (GTU) with an 8.49 CGPA. I'm passionate about turning ideas into robust
+                        backend systems and continuously expanding my skill set through real-world projects
+                        and internships.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="flex items-center gap-3">
+                            <span class="iconify text-emerald-400" data-icon="lucide:map-pin" data-width="16"></span>
+                            <span class="text-sm text-neutral-400">Rajkot, Gujarat</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="iconify text-emerald-400" data-icon="lucide:briefcase" data-width="16"></span>
+                            <span class="text-sm text-neutral-400">Intern / Open to roles</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="iconify text-emerald-400" data-icon="lucide:graduation-cap" data-width="16"></span>
+                            <span class="text-sm text-neutral-400">B.E. Computer Engg.</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="iconify text-emerald-400" data-icon="lucide:phone" data-width="16"></span>
+                            <span class="text-sm text-neutral-400">+91-6005563101</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="#contact" class="btn-primary inline-flex items-center gap-2 bg-white text-black text-sm font-medium px-8 py-3 rounded-full">
+                            Let's Talk
+                            <span class="iconify" data-icon="lucide:arrow-right" data-width="16"></span>
+                        </a>
+                        <a href="https://github.com/mr1abhisheksharma" target="_blank" class="btn-secondary border border-white/10 bg-white/5 text-white text-sm font-medium px-8 py-3 rounded-full flex items-center gap-2">
+                            <span class="iconify text-neutral-400" data-icon="lucide:github" data-width="16"></span>
+                            GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
+                    <span class="text-xs font-medium text-emerald-400">Skills & Expertise</span>
+                </div>
+                <h2 class="font-dm font-light tracking-tight text-3xl md:text-5xl mb-4">
+                    My Technical <span class="hero-gradient">Toolkit</span>
+                </h2>
+                <p class="text-neutral-400 font-light max-w-xl mx-auto">Technologies and tools I use to build scalable backend systems and full-stack web applications.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-8 card-hover">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                            <span class="iconify text-emerald-400" data-icon="lucide:server" data-width="20"></span>
+                        </div>
+                        <h3 class="font-dm text-xl font-medium">Backend Development</h3>
+                    </div>
+                    <div class="space-y-5">
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">Python</span><span class="text-xs text-emerald-400">80%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" data-width="80"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">Django / Django REST Framework</span><span class="text-xs text-emerald-400">78%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" data-width="78"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">REST API Design</span><span class="text-xs text-emerald-400">80%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" data-width="80"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">JWT Authentication</span><span class="text-xs text-emerald-400">75%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" data-width="75"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">Celery</span><span class="text-xs text-emerald-400">60%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" data-width="60"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-8 card-hover">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                            <span class="iconify text-blue-400" data-icon="lucide:layout" data-width="20"></span>
+                        </div>
+                        <h3 class="font-dm text-xl font-medium">Frontend Development</h3>
+                    </div>
+                    <div class="space-y-5">
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">React.js</span><span class="text-xs text-blue-400">65%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" data-width="65"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">JavaScript</span><span class="text-xs text-blue-400">65%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" data-width="65"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">HTML / CSS</span><span class="text-xs text-blue-400">80%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" data-width="80"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">Tailwind CSS</span><span class="text-xs text-blue-400">70%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" data-width="70"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">Bootstrap</span><span class="text-xs text-blue-400">70%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" data-width="70"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-8 card-hover">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                            <span class="iconify text-purple-400" data-icon="lucide:database" data-width="20"></span>
+                        </div>
+                        <h3 class="font-dm text-xl font-medium">Database & Caching</h3>
+                    </div>
+                    <div class="space-y-5">
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">PostgreSQL</span><span class="text-xs text-purple-400">75%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-purple-500 to-purple-400 rounded-full" data-width="75"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><span class="text-sm text-neutral-300">Redis</span><span class="text-xs text-purple-400">55%</span></div>
+                            <div class="h-1.5 bg-neutral-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-purple-500 to-purple-400 rounded-full" data-width="55"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-8 card-hover">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center">
+                            <span class="iconify text-pink-400" data-icon="lucide:wrench" data-width="20"></span>
+                        </div>
+                        <h3 class="font-dm text-xl font-medium">Tools & Practices</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">Git</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">GitHub</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">Postman</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">VS Code</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">JWT Auth</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">REST API Design</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">Celery</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">Django ORM</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">Schema Design</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">Kali Linux</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">Bettercap</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">Material UI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
+                    <span class="text-xs font-medium text-emerald-400">Featured Work</span>
+                </div>
+                <h2 class="font-dm font-light tracking-tight text-3xl md:text-5xl mb-4">
+                    Projects I've <span class="hero-gradient">Built</span>
+                </h2>
+                <p class="text-neutral-400 font-light max-w-xl mx-auto">Real-world projects showcasing my expertise in Django REST Framework, PostgreSQL, and React integration.</p>
+            </div>
+
+            <div class="flex items-center justify-center gap-3 mb-12 flex-wrap">
+                <button class="project-filter active px-4 py-2 rounded-full text-sm font-medium border border-white/10 bg-white/10 text-white transition-all" data-filter="all">All</button>
+                <button class="project-filter px-4 py-2 rounded-full text-sm font-medium border border-white/10 bg-white/5 text-neutral-400 transition-all hover:text-white hover:bg-white/10" data-filter="fullstack">Full-Stack</button>
+                <button class="project-filter px-4 py-2 rounded-full text-sm font-medium border border-white/10 bg-white/5 text-neutral-400 transition-all hover:text-white hover:bg-white/10" data-filter="api">API Focused</button>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid">
+                <div class="project-card card-hover bg-neutral-900/30 border border-white/10 rounded-2xl overflow-hidden" data-category="fullstack">
+                    <div class="overflow-hidden h-48">
+                        <img src="https://picsum.photos/seed/flipkart-clone-ecommerce/600/400.jpg" alt="Flipkart Clone" class="project-image w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/20 text-emerald-400">Django</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-blue-500/20 text-blue-400">DRF</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-500/20 text-purple-400">PostgreSQL</span>
+                        </div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <h3 class="font-dm text-lg font-medium">Flipkart Clone</h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/20 text-amber-400">Oct 2024 — Feb 2025</span>
+                        </div>
+                        <p class="text-sm text-neutral-400 font-light leading-relaxed mb-4">Built a scalable REST API using DRF for user authentication, product cataloging, and cart logic. Designed PostgreSQL schemas for inventory and order management, seamlessly integrated with a React frontend.</p>
+                        <div class="flex items-center gap-2 flex-wrap mb-4">
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-white/5 text-neutral-500 border border-white/5">Python</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-white/5 text-neutral-500 border border-white/5">React</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-white/5 text-neutral-500 border border-white/5">Material UI</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <a href="https://github.com/mr1abhisheksharma" target="_blank" class="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-emerald-400 transition-colors">
+                                <span class="iconify" data-icon="lucide:github" data-width="14"></span> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card card-hover bg-neutral-900/30 border border-white/10 rounded-2xl overflow-hidden" data-category="fullstack">
+                    <div class="overflow-hidden h-48">
+                        <img src="https://picsum.photos/seed/healthcare-app-doctor/600/400.jpg" alt="Health-o-care" class="project-image w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/20 text-emerald-400">Django</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-blue-500/20 text-blue-400">DRF</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-pink-500/20 text-pink-400">Healthcare</span>
+                        </div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <h3 class="font-dm text-lg font-medium">Health-o-care</h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400">Feb 2025 — Ongoing</span>
+                        </div>
+                        <p class="text-sm text-neutral-400 font-light leading-relaxed mb-4">Developed a Django/DRF healthcare backend for appointment scheduling, medicine e-commerce, and symptom analysis. Engineered PostgreSQL relational schemas to manage patient records and inventory, integrated with React frontend.</p>
+                        <div class="flex items-center gap-2 flex-wrap mb-4">
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-white/5 text-neutral-500 border border-white/5">PostgreSQL</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-white/5 text-neutral-500 border border-white/5">React</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-white/5 text-neutral-500 border border-white/5">Material UI</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <a href="https://github.com/mr1abhisheksharma" target="_blank" class="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-emerald-400 transition-colors">
+                                <span class="iconify" data-icon="lucide:github" data-width="14"></span> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card card-hover bg-neutral-900/30 border border-white/10 rounded-2xl overflow-hidden" data-category="api">
+                    <div class="overflow-hidden h-48">
+                        <img src="https://picsum.photos/seed/quiz-app-education/600/400.jpg" alt="Quiz App" class="project-image w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/20 text-emerald-400">Django</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/20 text-amber-400">JWT</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-cyan-500/20 text-cyan-400">Google API</span>
+                        </div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <h3 class="font-dm text-lg font-medium">Quiz App</h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-blue-500/20 text-blue-400">Jun 2023 — Sep 2023</span>
+                        </div>
+                        <p class="text-sm text-neutral-400 font-light leading-relaxed mb-4">Built a full-stack quiz application leveraging Django ORM for efficient database queries and dynamic question fetching. Implemented secure JWT authentication and custom API views to process and display user scores.</p>
+                        <div class="flex items-center gap-2 flex-wrap mb-4">
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-white/5 text-neutral-500 border border-white/5">PostgreSQL</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-white/5 text-neutral-500 border border-white/5">HTML/CSS/JS</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-white/5 text-neutral-500 border border-white/5">Google API</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <a href="https://github.com/mr1abhisheksharma" target="_blank" class="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-emerald-400 transition-colors">
+                                <span class="iconify" data-icon="lucide:github" data-width="14"></span> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
+                        <span class="text-xs font-medium text-emerald-400">Experience</span>
+                    </div>
+                    <h2 class="font-dm font-light tracking-tight text-3xl md:text-4xl mb-10">
+                        Work <span class="hero-gradient">History</span>
+                    </h2>
+
+                    <div class="relative space-y-10">
+                        <div class="timeline-line"></div>
+
+                        <div class="relative pl-12">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                                <span class="iconify text-emerald-400" data-icon="lucide:building-2" data-width="16"></span>
+                            </div>
+                            <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-6 card-hover">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs text-emerald-400 font-medium">July 2025 — Present</span>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400">Current</span>
+                                </div>
+                                <h3 class="font-dm text-lg font-medium mb-1">Backend Developer Intern</h3>
+                                <p class="text-sm text-neutral-500 mb-3">Vivansh Infotech Pvt. Ltd., Ahmedabad</p>
+                                <p class="text-sm text-neutral-400 font-light leading-relaxed">Working as a full-time Python Django Intern. Building and maintaining backend systems using Django REST Framework, implementing REST APIs, and working on production-ready web applications.</p>
+                            </div>
+                        </div>
+
+                        <div class="relative pl-12">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
+                                <span class="iconify text-blue-400" data-icon="lucide:shield" data-width="16"></span>
+                            </div>
+                            <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-6 card-hover">
+                                <span class="text-xs text-blue-400 font-medium">May 2025 — July 2025</span>
+                                <h3 class="font-dm text-lg font-medium mb-1 mt-2">Cyber Security Intern</h3>
+                                <p class="text-sm text-neutral-500 mb-3">Centre For Development Of Advanced Computing (C-DAC), Noida — Virtual</p>
+                                <ul class="text-sm text-neutral-400 font-light leading-relaxed space-y-2">
+                                    <li class="flex items-start gap-2">
+                                        <span class="iconify text-blue-400 mt-0.5 flex-shrink-0" data-icon="lucide:check" data-width="14"></span>
+                                        Implemented and automated Man-in-the-Middle (MitM) attack techniques using Bettercap and Kali Linux.
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="iconify text-blue-400 mt-0.5 flex-shrink-0" data-icon="lucide:check" data-width="14"></span>
+                                        Analyzed network traffic and documented vulnerabilities and attack flow.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
+                        <span class="text-xs font-medium text-emerald-400">Education</span>
+                    </div>
+                    <h2 class="font-dm font-light tracking-tight text-3xl md:text-4xl mb-10">
+                        Learning <span class="hero-gradient">Path</span>
+                    </h2>
+
+                    <div class="space-y-6 mb-12">
+                        <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-6 card-hover">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs text-emerald-400 font-medium">September 2022 — Present</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400">8.49 CGPA</span>
+                            </div>
+                            <h3 class="font-dm text-lg font-medium mb-1">Bachelor of Engineering in Computer Engineering</h3>
+                            <p class="text-sm text-neutral-500">Government Engineering College, Rajkot (GTU)</p>
+                        </div>
+                        <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-6 card-hover">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs text-blue-400 font-medium">May 2021 — June 2022</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-blue-500/10 text-blue-400">86.8%</span>
+                            </div>
+                            <h3 class="font-dm text-lg font-medium mb-1">High School — CBSE</h3>
+                            <p class="text-sm text-neutral-500">Kendriya Vidyalaya Bantalab, Jammu</p>
+                        </div>
+                        <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-6 card-hover">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs text-purple-400 font-medium">May 2010 — April 2020</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-400">92.2%</span>
+                            </div>
+                            <h3 class="font-dm text-lg font-medium mb-1">Matriculation — CBSE</h3>
+                            <p class="text-sm text-neutral-500">Kendriya Vidyalaya Damana, Jammu</p>
+                        </div>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
+                        <span class="text-xs font-medium text-emerald-400">Certifications & Achievements</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4 bg-neutral-900/30 border border-white/10 rounded-xl p-5 card-hover">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="iconify text-amber-400" data-icon="lucide:award" data-width="18"></span>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium mb-1">Google: Web Animation using Advanced JavaScript</h4>
+                                <p class="text-xs text-neutral-500">Google — November 2023</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 bg-neutral-900/30 border border-white/10 rounded-xl p-5 card-hover">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="iconify text-emerald-400" data-icon="lucide:trophy" data-width="18"></span>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium mb-1">Best Cadet — 3 GUJ Naval NCC Unit Bhavnagar</h4>
+                                <p class="text-xs text-neutral-500">National Cadet Corps — October 2024</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 bg-neutral-900/30 border border-white/10 rounded-xl p-5 card-hover">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="iconify text-blue-400" data-icon="lucide:code" data-width="18"></span>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium mb-1">Hack The Mountain 5.0 — Hackathon</h4>
+                                <p class="text-xs text-neutral-500">Marwadi University — October 2024</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 bg-neutral-900/30 border border-white/10 rounded-xl p-5 card-hover">
+                            <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="iconify text-purple-400" data-icon="lucide:presentation" data-width="18"></span>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium mb-1">International Level Student Workshop</h4>
+                                <p class="text-xs text-neutral-500">February 2024</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 bg-neutral-900/30 border border-white/10 rounded-xl p-5 card-hover">
+                            <div class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="iconify text-pink-400" data-icon="lucide:lightbulb" data-width="18"></span>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium mb-1">Bring it On 4.0 — Product Management Case Study</h4>
+                                <p class="text-xs text-neutral-500">Competition — July 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-24 border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
+                    <span class="text-xs font-medium text-emerald-400">Testimonials</span>
+                </div>
+                <h2 class="font-dm font-light tracking-tight text-3xl md:text-5xl mb-4">
+                    What People <span class="hero-gradient">Say</span>
+                </h2>
+                <p class="text-neutral-400 font-light max-w-xl mx-auto">Feedback from mentors, colleagues, and collaborators.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-8 card-hover">
+                    <div class="flex items-center gap-1 mb-4">
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                    </div>
+                    <p class="text-sm text-neutral-400 font-light leading-relaxed mb-6">"Abhishek has a strong grasp of Django REST Framework. His approach to API design and database schema modeling is methodical and well thought out. A dedicated learner with great potential."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-sm font-medium">TM</div>
+                        <div>
+                            <div class="text-sm font-medium">Team Lead</div>
+                            <div class="text-xs text-neutral-500">Vivansh Infotech</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-8 card-hover">
+                    <div class="flex items-center gap-1 mb-4">
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                    </div>
+                    <p class="text-sm text-neutral-400 font-light leading-relaxed mb-6">"During his Cyber Security internship at C-DAC, Abhishek showed excellent analytical skills. His documentation of MitM attack flows was detailed and professional beyond his experience level."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-sm font-medium">MS</div>
+                        <div>
+                            <div class="text-sm font-medium">Mentor</div>
+                            <div class="text-xs text-neutral-500">C-DAC, Noida</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-8 card-hover">
+                    <div class="flex items-center gap-1 mb-4">
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                        <span class="iconify text-amber-400" data-icon="lucide:star" data-width="16"></span>
+                    </div>
+                    <p class="text-sm text-neutral-400 font-light leading-relaxed mb-6">"Abhishek's project work — especially the Flipkart Clone and Health-o-care — demonstrates a solid understanding of full-stack development with Django and React. His code is clean and well-structured."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-sm font-medium">PR</div>
+                        <div>
+                            <div class="text-sm font-medium">Project Guide</div>
+                            <div class="text-xs text-neutral-500">GEC Rajkot</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 relative">
+        <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/20 to-transparent pointer-events-none"></div>
+        <div class="relative max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
+                        <span class="text-xs font-medium text-emerald-400">Contact</span>
+                    </div>
+                    <h2 class="font-dm font-light tracking-tight text-3xl md:text-5xl mb-6">
+                        Let's Build Something<br>
+                        <span class="hero-gradient">Amazing Together</span>
+                    </h2>
+                    <p class="text-neutral-400 font-light leading-relaxed mb-10 max-w-md">
+                        Have a project in mind or looking for a Django developer? I'd love to hear about it. Currently open to full-time roles, freelance projects, and collaborations.
+                    </p>
+
+                    <div class="space-y-6">
+                        <a href="mailto:mr1abhisheksharma@gmail.com" class="flex items-center gap-4 group">
+                            <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-emerald-500/30 transition-colors">
+                                <span class="iconify text-emerald-400" data-icon="lucide:mail" data-width="20"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-neutral-500 mb-0.5">Email</div>
+                                <span class="text-sm text-neutral-300 group-hover:text-emerald-400 transition-colors">mr1abhisheksharma@gmail.com</span>
+                            </div>
+                        </a>
+                        <a href="tel:+916005563101" class="flex items-center gap-4 group">
+                            <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-emerald-500/30 transition-colors">
+                                <span class="iconify text-emerald-400" data-icon="lucide:phone" data-width="20"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-neutral-500 mb-0.5">Phone</div>
+                                <span class="text-sm text-neutral-300 group-hover:text-emerald-400 transition-colors">+91-6005563101</span>
+                            </div>
+                        </a>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                                <span class="iconify text-emerald-400" data-icon="lucide:map-pin" data-width="20"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-neutral-500 mb-0.5">Location</div>
+                                <span class="text-sm text-neutral-300">Rajkot, Gujarat, India</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                                <span class="iconify text-emerald-400" data-icon="lucide:clock" data-width="20"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-neutral-500 mb-0.5">Availability</div>
+                                <span class="text-sm text-neutral-300">Open to full-time & freelance</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 mt-10">
+                        <a href="https://github.com/mr1abhisheksharma" target="_blank" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
+                            <span class="iconify" data-icon="lucide:github" data-width="18"></span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/abhishek-sharma-8a8aa7210/" target="_blank" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
+                            <span class="iconify" data-icon="lucide:linkedin" data-width="18"></span>
+                        </a>
+                        <a href="mailto:mr1abhisheksharma@gmail.com" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
+                            <span class="iconify" data-icon="lucide:mail" data-width="18"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact Form with EmailJS -->
+                <div class="bg-neutral-900/30 border border-white/10 rounded-2xl p-8">
+                    <form id="contact-form" class="space-y-6" novalidate>
+                        <div class="grid sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="text-xs text-neutral-500 mb-2 block">Name *</label>
+                                <input type="text" name="from_name" required placeholder="Your name"
+                                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-emerald-500/50 transition-colors">
+                                <p class="error-text">Please enter your name</p>
+                            </div>
+                            <div>
+                                <label class="text-xs text-neutral-500 mb-2 block">Email *</label>
+                                <input type="email" name="from_email" required placeholder="you@example.com"
+                                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-emerald-500/50 transition-colors">
+                                <p class="error-text">Please enter a valid email</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs text-neutral-500 mb-2 block">Subject</label>
+                            <input type="text" name="subject" placeholder="Project Discussion / Job Opportunity"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-emerald-500/50 transition-colors">
+                        </div>
+                        <div>
+                            <label class="text-xs text-neutral-500 mb-2 block">Type</label>
+                            <select name="inquiry_type"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-neutral-400 focus:outline-none focus:border-emerald-500/50 transition-colors appearance-none"
+                                style="background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23737373%22 stroke-width=%222%22%3E%3Cpath d=%22M6 9l6 6 6-6%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 16px center;">
+                                <option value="">Select inquiry type</option>
+                                <option value="Full-time Opportunity">Full-time Opportunity</option>
+                                <option value="Freelance Project">Freelance Project</option>
+                                <option value="Collaboration">Collaboration</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-neutral-500 mb-2 block">Message *</label>
+                            <textarea name="message" required rows="5" placeholder="Tell me about your project or opportunity..."
+                                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-emerald-500/50 transition-colors resize-none"></textarea>
+                            <p class="error-text">Please enter your message</p>
+                        </div>
+                        <button type="submit" id="submit-btn"
+                            class="btn-primary w-full bg-white text-black text-sm font-medium py-3 rounded-full flex items-center justify-center gap-2">
+                            <span id="btn-text">Send Message</span>
+                            <span class="iconify" data-icon="lucide:send" data-width="16" id="btn-icon"></span>
+                            <svg id="btn-spinner" class="hidden animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                        <span class="iconify text-emerald-400" data-icon="lucide:code-2" data-width="16"></span>
+                    </div>
+                    <span class="font-dm text-lg font-medium tracking-tighter">Abhishek<span class="text-emerald-400">.</span></span>
+                </div>
+                <p class="text-sm text-neutral-600">© 2026 Abhishek Sharma. Built with Python, Django & ❤️</p>
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com/mr1abhisheksharma" target="_blank" class="text-neutral-600 hover:text-emerald-400 transition-colors">
+                        <span class="iconify" data-icon="lucide:github" data-width="18"></span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/abhishek-sharma-8a8aa7210/" target="_blank" class="text-neutral-600 hover:text-emerald-400 transition-colors">
+                        <span class="iconify" data-icon="lucide:linkedin" data-width="18"></span>
+                    </a>
+                    <a href="mailto:mr1abhisheksharma@gmail.com" class="text-neutral-600 hover:text-emerald-400 transition-colors">
+                        <span class="iconify" data-icon="lucide:mail" data-width="18"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 w-10 h-10 rounded-full bg-neutral-900 border border-white/10 flex items-center justify-center text-neutral-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all opacity-0 pointer-events-none z-50" style="transition: opacity 0.3s ease, border-color 0.3s ease, color 0.3s ease;">
+        <span class="iconify" data-icon="lucide:arrow-up" data-width="18"></span>
+    </button>
+
+    <script>
+        // ============================================================
+        //  EMAILJS SETUP — Replace these 3 values with your own!
+        //  Get them from: https://www.emailjs.com/
+        // ============================================================
+        const EMAILJS_PUBLIC_KEY  = 'obBTkv2textsi8v3k';   // Step 3
+        const EMAILJS_SERVICE_ID  = 'service_g8tb0j8';   // Step 5
+        const EMAILJS_TEMPLATE_ID = 'template_6ccs6im';  // Step 7
+
+        // Initialize EmailJS
+        (function() {
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+        })();
+
+        // ===== Mobile Menu =====
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileClose = document.getElementById('mobile-close');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileToggle.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+        });
+        mobileClose.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+        });
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
+            });
+        });
+
+        // ===== Active Nav Link on Scroll =====
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // ===== Back to Top =====
+        const backToTop = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.style.opacity = '1';
+                backToTop.style.pointerEvents = 'auto';
+            } else {
+                backToTop.style.opacity = '0';
+                backToTop.style.pointerEvents = 'none';
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===== Stat Counter Animation =====
+        const statNumbers = document.querySelectorAll('[data-target]');
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.dataset.target);
+                    let count = 0;
+                    const increment = target / (1500 / 30);
+                    const timer = setInterval(() => {
+                        count += increment;
+                        if (count >= target) {
+                            entry.target.textContent = target + '+';
+                            clearInterval(timer);
+                        } else {
+                            entry.target.textContent = Math.floor(count) + '+';
+                        }
+                    }, 30);
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        statNumbers.forEach(num => statsObserver.observe(num));
+
+        // ===== Skill Bar Animation =====
+        const skillBars = document.querySelectorAll('.skill-bar');
+        const skillObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.width = entry.target.dataset.width + '%';
+                    skillObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        skillBars.forEach(bar => {
+            bar.style.width = '0%';
+            skillObserver.observe(bar);
+        });
+
+        // ===== Project Filter =====
+        const filterBtns = document.querySelectorAll('.project-filter');
+        const projectCards = document.querySelectorAll('.project-card');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-white/10', 'text-white');
+                    b.classList.add('bg-white/5', 'text-neutral-400');
+                });
+                btn.classList.remove('bg-white/5', 'text-neutral-400');
+                btn.classList.add('bg-white/10', 'text-white');
+                const filter = btn.dataset.filter;
+                projectCards.forEach(card => {
+                    if (filter === 'all' || card.dataset.category === filter) {
+                        card.style.display = 'block';
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(10px)';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 50);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // ===== Toast System =====
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        let toastTimer = null;
+
+        function showToast(message, isError = false) {
+            if (toastTimer) clearTimeout(toastTimer);
+            toastMessage.textContent = message;
+            toast.style.borderColor = isError ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)';
+            const icon = toast.querySelector('.iconify');
+            icon.style.color = isError ? '#ef4444' : '#34d399';
+            icon.setAttribute('data-icon', isError ? 'lucide:alert-circle' : 'lucide:check-circle');
+            toast.classList.add('show');
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        // ===== Field Validation Helpers =====
+        function clearFieldError(field) {
+            field.classList.remove('field-error');
+            const errorEl = field.parentElement.querySelector('.error-text');
+            if (errorEl) errorEl.classList.remove('visible');
+        }
+
+        function setFieldError(field, msg) {
+            field.classList.add('field-error');
+            const errorEl = field.parentElement.querySelector('.error-text');
+            if (errorEl) {
+                errorEl.textContent = msg;
+                errorEl.classList.add('visible');
+            }
+        }
+
+        // Clear errors on input
+        document.querySelectorAll('#contact-form input, #contact-form textarea').forEach(field => {
+            field.addEventListener('input', () => clearFieldError(field));
+        });
+
+        // ===== Contact Form with EmailJS =====
+        const contactForm = document.getElementById('contact-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnIcon = document.getElementById('btn-icon');
+        const btnSpinner = document.getElementById('btn-spinner');
+
+        function setButtonLoading(loading) {
+            submitBtn.disabled = loading;
+            btnText.textContent = loading ? 'Sending...' : 'Send Message';
+            btnIcon.classList.toggle('hidden', loading);
+            btnSpinner.classList.toggle('hidden', !loading);
+        }
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nameField = contactForm.from_name;
+            const emailField = contactForm.from_email;
+            const messageField = contactForm.message;
+            let hasError = false;
+
+            // Clear previous errors
+            clearFieldError(nameField);
+            clearFieldError(emailField);
+            clearFieldError(messageField);
+
+            // Validate name
+            if (!nameField.value.trim()) {
+                setFieldError(nameField, 'Please enter your name');
+                hasError = true;
+            }
+
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailField.value.trim()) {
+                setFieldError(emailField, 'Please enter your email');
+                hasError = true;
+            } else if (!emailRegex.test(emailField.value.trim())) {
+                setFieldError(emailField, 'Please enter a valid email address');
+                hasError = true;
+            }
+
+            // Validate message
+            if (!messageField.value.trim()) {
+                setFieldError(messageField, 'Please enter your message');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Check if EmailJS is configured
+            if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY_HERE') {
+                showToast('Email not configured yet. See the setup instructions in the code.', true);
+                console.warn(
+                    '%c📧 EmailJS not configured!\n' +
+                    '%cFollow these steps to enable email sending:\n\n' +
+                    '%c1. Go to https://www.emailjs.com/ and create a free account\n' +
+                    '2. Go to Account → API Keys → copy your Public Key\n' +
+                    '3. Go to Email Services → Add New Service → choose Gmail → connect → copy Service ID\n' +
+                    '4. Go to Email Templates → Create Template with these variables:\n' +
+                    '   {{from_name}}, {{from_email}}, {{subject}}, {{inquiry_type}}, {{message}}, {{to_name}}\n' +
+                    '   Set "To Email" to: mr1abhisheksharma@gmail.com\n' +
+                    '5. Copy the Template ID\n' +
+                    '6. Replace the 3 values at the top of the <script> section in this HTML file:\n' +
+                    '   EMAILJS_PUBLIC_KEY, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID',
+                    'color: #ef4444; font-size: 16px; font-weight: bold;',
+                    'color: #ffffff; font-size: 13px;',
+                    'color: #34d399; font-size: 13px;'
+                );
+                return;
+            }
+
+            // Build template params
+            const templateParams = {
+                from_name: nameField.value.trim(),
+                from_email: emailField.value.trim(),
+                subject: contactForm.subject.value.trim() || 'Portfolio Contact',
+                inquiry_type: contactForm.inquiry_type.value || 'General',
+                message: messageField.value.trim(),
+                to_name: 'Abhishek Sharma',
+                // Extra info for your reference
+                reply_to: emailField.value.trim(),
+            };
+
+            setButtonLoading(true);
+
+            try {
+                const response = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    templateParams
+                );
+
+                if (response.status === 200) {
+                    contactForm.reset();
+                    showToast("Message sent successfully! I'll get back to you soon.");
+                } else {
+                    throw new Error('Unexpected response');
+                }
+            } catch (error) {
+                console.error('EmailJS Error:', error);
+                if (error.status === 422 || error.text?.includes('required')) {
+                    showToast('Some required fields are missing in the email template. Check your EmailJS template variables.', true);
+                } else if (error.status === 401 || error.status === 403) {
+                    showToast('Email service authentication failed. Check your EmailJS keys.', true);
+                } else {
+                    showToast('Failed to send message. Please try again or email me directly.', true);
+                }
+            } finally {
+                setButtonLoading(false);
+            }
+        });
+
+        // ===== Scroll Reveal =====
+        const revealElements = document.querySelectorAll('#about, #skills, #projects, #experience, #contact');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.05 });
+        revealElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            revealObserver.observe(el);
+        });
+
+        // ===== Navbar border on scroll =====
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            nav.style.borderBottomColor = window.scrollY > 50 ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.05)';
+        });
+    </script>
+</body>
+</html>
